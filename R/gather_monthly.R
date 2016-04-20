@@ -15,15 +15,12 @@
 gather_monthly <- function(x){
   
   ## We really only need this data for the last day of the month, so, we can 
-  ## filter out the rest as here. Keep in mind that this is the last trade day of
-  ## the month, not always the last day.
-  
-  ## It is hacky to have filters like top.1500 floating around in this document,
-  ## but I will worry about this later.
+  ## filter out the rest as here. Keep in mind that this is the last trade day
+  ## of the month, not always the last day. Maybe just merge this in with
+  ## gather_daily()?
   
   monthly <- x %>% group_by(month) %>% 
-    filter(min_rank(desc(date)) == 1 & ! is.na(sd.252.0.d)) %>% 
-    filter(top.1500)
+    filter(min_rank(desc(date)) == 1 & ! is.na(sd.252.0.d)) 
   
   return(monthly)
 }

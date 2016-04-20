@@ -6,11 +6,6 @@ library(RcppRoll)
 library(baker2)
 
 ## ------------------------------------------------------------------------
-data(monthly)
-
-summary(monthly)
-
-## ------------------------------------------------------------------------
 ## Note that there are a lot of crazy outlier returns. I need to examine these 
 ## and deal with them in a sensible fashion. For now, I am just going to get rid
 ## of them and worry about it later. Just avoiding the non top.1500 seems to 
@@ -32,7 +27,7 @@ z <- monthly %>% group_by(sd.class, date) %>%
 ## plot them.
       
 z %>% filter(! is.na(cum.ret)) %>% 
-  ggplot(aes(x = date, y = cum.ret, color = as.character(sd.class))) + 
+  ggplot(aes(x = date, y = cum.ret, color = sd.class)) + 
     geom_line() + 
     ggtitle("Returns by Volatility Quintile \n January 1999 - December 2007") + 
     xlab("Date") + 

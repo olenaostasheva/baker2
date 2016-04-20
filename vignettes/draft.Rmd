@@ -59,7 +59,7 @@ z <- monthly %>% group_by(sd.class, date) %>%
 ## plot them.
       
 z %>% filter(! is.na(cum.ret)) %>% 
-  ggplot(aes(x = date, y = cum.ret, color = as.character(sd.class))) + 
+  ggplot(aes(x = date, y = cum.ret, color = sd.class)) + 
     geom_line() + 
     ggtitle("Returns by Volatility Quintile \n January 1999 - December 2007") + 
     xlab("Date") + 

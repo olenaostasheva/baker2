@@ -15,9 +15,10 @@ gather_daily <- function(){
   ## here but not mentioning ws.data in DESCRIPTION) is sensible. I purposely
   ## choose not to export this function because only I should be using it.
   
-  ## First, data() the required inputs. 
-  
-  requireNamespace(ws.data)
+  ## First, data() the required inputs. Not sure how to handle the need for 
+  ## library(ws.data) here. For a while, I thought the solution was to have 
+  ## requireNamespace(ws.data) here, but that does not work. So, for now, I just
+  ## need to remember to use library(ws.data) at the prompt before running this.
   
   data(daily.1998)
   data(daily.1999)
@@ -32,7 +33,8 @@ gather_daily <- function(){
   data(yearly)
   data(secref)
   
-  ## Merge in a couple of steps for clarity.
+  ## Merge in a couple of steps for clarity. Rename v.date because it is so
+  ## aesthetically offensive.
   
   x <- bind_rows(daily.1998, daily.1999, daily.2000, daily.2001,
                  daily.2002, daily.2003, daily.2004, daily.2005,
@@ -52,7 +54,7 @@ gather_daily <- function(){
   
   x <- left_join(x, select(secref, -symbol), by = "id")
   
-  x <- select(x, symbol, name, date, tret, top.1500, month) %>% arrange(date, symbol)
+  x <- select(x, symbol, name, date, tret, top.1500, month, year) %>% arrange(date, symbol)
   
   ## Calculate key variables for all stocks and all days. Only want to do this
   ## once and then save the data frame in /data.
@@ -71,23 +73,57 @@ gather_daily <- function(){
   ## data for that date. But, for calculating forward return, I can't. That is
   ## why I need to lead() tret by one day.
   
-  ## Some problems are probably caused by calculating the sd.class information 
-  ## here, rather than first throwing away all the bad information. Probably not
-  ## a big effect, but still.
+  ## Need to think harder about what to do with missing values. Should I remove 
+  ## them? For now, I just let a single NA make everything NA and then, in the 
+  ## case of sd.252.0.d, I filter you out. Adding ungroup() at the end is an
+  ## incantation of sorts.
   
-  daily <- x %>% group_by(symbol) %>% 
+  x <- x %>% group_by(symbol) %>% 
     mutate(sd.252.0.d = roll_sd(tret, 252, fill = NA, align = "right") * sqrt(252)) %>% 
-    mutate(sd.class = ntile(sd.252.0.d, n = 5)) %>% 
-    mutate(ret.0.22.d = roll_prod(lead(tret, n = 1)  + 1, 22, fill = NA, align = "left") - 1)
+    mutate(ret.0.22.d = roll_prod(lead(tret, n = 1)  + 1, 22, fill = NA, align = "left") - 1) %>% 
+    ungroup()
   
-  ## Now that I have calculated everything that I care about, I can get rid of 
+  ## Now that I have calculated trailing and leading measures, I can get rid of 
   ## suspect data. For example, if you are not in the top 1500 companies by 
-  ## market cap in your year (meaning as-of January 1), then I don't consider
-  ## you investible.
+  ## market cap in your year (meaning as-of January 1), then I don't consider 
+  ## you investible. Also, if you don't have a trailing volatility, you are
+  ## gone.
   
-  daily <- filter(daily, top.1500)
+  x <- filter(x, top.1500 & ! is.na(sd.252.0.d))
+  
+  ## All these symbols have at least one day in which their total return is 
+  ## greater than 700%. I doubt that, so let's just delete those symbols 
+  ## completely. Note that, now that I am getting rid of NA sd.252.0.d, many of 
+  ## these are already gone (or at least the key rows are) but I am leaving this
+  ## here on general principals.
+  
+  x <- filter(x, ! symbol %in% c("3STTCE", "CHTM", "LDIG", "SCAI", 
+                                 "3MFNF", "3CBHDE", "KCI"))
   
   
+  ## There may be some other outlier returns that I should remove here. For 
+  ## example, BRCM has a return of 150% on January 9, 2004 which is not present 
+  ## in Bloomberg. But Bloomberg does not have a split either. Fortunately, the
+  ## new  getting rid of NA sd.252.0.d removes that BRCM row anyway.
+  
+  ## Note that, before, I mistakenly included this calculation of sd.class 
+  ## above, which was very wrong since that grouping was by symbol. Instead, we 
+  ## need to group_by date. Some of the other big moves seem suspect as well,
+  ## but it is hard to check.
+  
+  daily <- x %>% group_by(date) %>% 
+    mutate(sd.class = as.character(ntile(sd.252.0.d, n = 5))) %>%
+    mutate(sd.class = ifelse(sd.class == "1", "Low", sd.class)) %>% 
+    mutate(sd.class = ifelse(sd.class == "5", "High", sd.class)) %>% 
+    mutate(sd.class = factor(sd.class, levels = c("Low", "2", "3", "4", "High"))) %>% 
+    ungroup()
+  
+  ## Double check the data with this plot. There are some outliers, but I am not
+  ## sure they matter especially since we only use sd.class in the analysis.
+  
+  ## ggplot(data = daily, aes(sd.class, log(sd.252.0.d))) + geom_violin() + facet_wrap(~ year)
+  
+
   ## I should add some test cases, using test_that. In the meantime, here are a 
   ## couple of calculations that I confirmed by hand. Really ought to check the
   ## return data against something like the S&P.
