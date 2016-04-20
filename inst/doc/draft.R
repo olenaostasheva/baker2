@@ -1,43 +1,16 @@
----
-title: "A Replication of `Benchmarks as Limits to Arbitrage'"
-author: "David Kane"
-date: "`r Sys.Date()`"
-output: html_document
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(cache = TRUE, echo = FALSE, message = FALSE, warning = FALSE)
 library(dplyr)
 library(ggplot2)
 library(RcppRoll)
 library(baker2)
-```
 
-
-# Introduction
-
-"Benchmarks as Limits to Arbitrage: Understanding the Low Volatility Anomaly" by Baker, Bradley and Wurgler (2011)^[http://people.stern.nyu.edu/jwurgler/papers/faj-benchmarks.pdf] is an important paper in the literature on low volatility investing. I replicate the main results of this paper using data for large capitalization US stocks from 1998 through 2007.
-
-# Literature Review
-
-# Data
-
-Let's take a look at a summary of the data.
-
-```{r}
+## ------------------------------------------------------------------------
 data(monthly)
 
 summary(monthly)
-```
 
-
-Create the the first volatility plot from Baker et al.
-
-```{r}
+## ------------------------------------------------------------------------
 ## Note that there are a lot of crazy outlier returns. I need to examine these 
 ## and deal with them in a sensible fashion. For now, I am just going to get rid
 ## of them and worry about it later. Just avoiding the non top.1500 seems to 
@@ -68,13 +41,4 @@ z %>% filter(! is.na(cum.ret)) %>%
 ## Why am I getting the opposite answer from Baker? Why is it so hard to make
 ## this plot look pretty
 
-```
 
-
-
-
-# Replication
-
-# Extension
-
-# Conclusion

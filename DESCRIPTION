@@ -1,9 +1,9 @@
-Package: baker1
+Package: baker2
 Title: Replicate Results from Benchmarks as Limits to Arbitrage
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: person("David", "Kane", email = "dave.kane@gmail.com", role = c("aut", "cre"))
 Description: This package replicates some of the main results from Baker et al
-    (2011), "Benchmarks as Limits to Arbitrage."
+    (2011), "Benchmarks as Limits to Arbitrage." It is the successor package to baker1.
 Depends:
     R (>= 3.2.1)
 License: GPL-3
@@ -14,6 +14,7 @@ Imports:
     lubridate,
     RcppRoll
 Suggests:
-    knitr
+    knitr,
+    ws.data
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

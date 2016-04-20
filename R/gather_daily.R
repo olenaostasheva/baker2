@@ -1,4 +1,4 @@
-#' Gather Data
+#' Gather Daily Data
 #' 
 #' gather_daily() brings together all the daily return data we need from the 
 #' ws.data package. This is not meant to be used interactively, since it
@@ -17,7 +17,7 @@ gather_daily <- function(){
   
   ## First, data() the required inputs. 
   
-  library(ws.data)
+  requireNamespace(ws.data)
   
   data(daily.1998)
   data(daily.1999)
