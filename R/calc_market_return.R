@@ -23,5 +23,8 @@ calc_market_return <- function(x){
     filter(! is.na(cap.usd)) %>% 
     summarize(market.ret = mean(tret, w = cap.usd, na.rm = TRUE))
   
+  ## Cumulative market returns seem off, with not nearly enough losses in, say,
+  ## 2000 and 2001. What is going on?
+  
   return(market.ret)
 }
