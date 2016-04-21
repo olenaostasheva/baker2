@@ -23,8 +23,13 @@ calc_market_return <- function(x){
     filter(! is.na(cap.usd)) %>% 
     summarize(market.ret = mean(tret, w = cap.usd, na.rm = TRUE))
   
-  ## Cumulative market returns seem off, with not nearly enough losses in, say,
-  ## 2000 and 2001. What is going on?
+  ## Cumulative market returns seem off, with not nearly enough losses in, say, 
+  ## 2000 and 2001. What is going on? Here is some code I use to check on two
+  ## dates with big market moves. Looks OK to me!
+  
+  ## filter(daily, date %in% as.Date(c("2000-04-13", "2002-10-10")) & !
+  ## is.na(cap.usd))  %>% group_by(date)  %>% summarize(y = weighted.mean(tret,
+  ## w = cap.usd, na.rm = TRUE))
   
   return(market.ret)
 }
