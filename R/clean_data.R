@@ -13,26 +13,21 @@
 
 clean_data <- function(){
   
-  ## Function for cleaning daily data. Not sure if this set up (using "library"
-  ## here but not mentioning ws.data in DESCRIPTION) is sensible. 
+  ## Function for cleaning daily data. First, data() the required inputs. Note
+  ## the trick of specifying the package.
   
-  ## First, data() the required inputs. Not sure how to handle the need for 
-  ## library(ws.data) here. For a while, I thought the solution was to have 
-  ## requireNamespace(ws.data) here, but that does not work. So, for now, I just
-  ## need to remember to use library(ws.data) at the prompt before running this.
-  
-  data(daily.1998)
-  data(daily.1999)
-  data(daily.2000)
-  data(daily.2001)
-  data(daily.2002)
-  data(daily.2003)
-  data(daily.2004)
-  data(daily.2005)
-  data(daily.2006)
-  data(daily.2007)
-  data(yearly)
-  data(secref)
+  data(daily.1998, package = "ws.data")
+  data(daily.1999, package = "ws.data")
+  data(daily.2000, package = "ws.data")
+  data(daily.2001, package = "ws.data")
+  data(daily.2002, package = "ws.data")
+  data(daily.2003, package = "ws.data")
+  data(daily.2004, package = "ws.data")
+  data(daily.2005, package = "ws.data")
+  data(daily.2006, package = "ws.data")
+  data(daily.2007, package = "ws.data")
+  data(yearly, package = "ws.data")
+  data(secref, package = "ws.data")
   
   ## Merge in a couple of steps for clarity. Rename v.date because it is so
   ## aesthetically offensive.

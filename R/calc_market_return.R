@@ -24,16 +24,28 @@ calc_market_return <- function(x){
   ## participate in the calculation of market returns. If you are not in the top
   ## 1500 at the start of the year, you are too small to matter.
   
-  x <- filter(x, ! is.na(cap.usd)) %>% filter(top.1500)
+  y <- filter(x, ! is.na(cap.usd)) %>% filter(top.1500) %>% 
+    select(symbol, name, date, tret, cap.usd)
   
-  stopifnot(nrow(x) < 3600000)
+  stopifnot(nrow(y) < 3600000)
 
   ## Calculate a market return or each date. Note that any
   ## missing value for the weight variable in a weighted mean causes the entire
   ## calculation to be NA, so we need to remove any such rows.
   
-  y <- x %>% group_by(date) %>% 
+  z <- y %>% group_by(date) %>% 
     summarize(mret = weighted.mean(tret, w = cap.usd, na.rm = TRUE))
+
+  
+  ## Merge in the SPX returns
+  
+  data(spx)
+   
+  all <- left_join(z, spx, by = "date") %>% select(-id) %>% 
+      rename(spx.ret = return) %>%
+    mutate(cumret     = cumprod(mret + 1) - 1) %>% 
+    mutate(spx.cumret = cumprod(spx.ret + 1) - 1)
+      
   
   ## Hard to be sure that we are getting exactly the correct answer here, 
   ## especially since our weights are constant for the whole year. So, later in 
@@ -65,5 +77,5 @@ calc_market_return <- function(x){
   ## is.na(cap.usd))  %>% group_by(date)  %>% summarize(y = weighted.mean(tret,
   ## w = cap.usd, na.rm = TRUE))
   
-  return(market.ret)
+  return(all)
 }
