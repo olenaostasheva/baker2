@@ -7,6 +7,8 @@
 #'   \code{clean_data()}.
 #'   
 #' @return A data frame of daily market returns. 
+#' 
+#' @export
 #'   
 #' @import dplyr RcppRoll
 
