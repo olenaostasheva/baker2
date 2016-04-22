@@ -10,6 +10,7 @@
  \item{\code{name}}{a character vector} 
  \item{\code{date}}{a Date} 
  \item{\code{tret}}{a numeric vector} 
+ \item{\code{cap.usd}}{a numeric vector} 
  \item{\code{top.1500}}{a logical vector} 
  \item{\code{month}}{a character vector}
  \item{\code{year}}{a numeric vector}  
