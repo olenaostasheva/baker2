@@ -5,6 +5,8 @@
 #' requires the ws.data package.
 #' 
 #' @return A data frame on stock-by-date information.
+#' 
+#' @export
 #'   
 #' @import dplyr RcppRoll
 

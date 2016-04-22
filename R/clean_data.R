@@ -94,8 +94,8 @@ clean_data <- function(){
   ## return data against something like the S&P.
   
   stopifnot(
-    round(subset(daily, date == "2006-07-03" & symbol == "IBM", select = "ret.0.22.d"), 5) == -0.02166,
-    round(subset(daily, date == "2007-08-06" & symbol == "GOOG", select = "sd.252.0.d"), 5) == 0.23195
+    round(subset(x, date == "2006-07-03" & symbol == "IBM", select = "ret.0.22.d"), 5) == -0.02166,
+    round(subset(x, date == "2007-08-06" & symbol == "GOOG", select = "sd.252.0.d"), 5) == 0.23195
   )
   
   ## Basic check that the return data frame is of approximately the right size.
